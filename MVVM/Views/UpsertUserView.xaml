@@ -1,11 +1,11 @@
-﻿<Window x:Class="EMS.Views.AddUserView"
+﻿<Window x:Class="EMS.Views.UpsertUserView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EMS.Views"
         mc:Ignorable="d"
-        Title="AddUser" Height="450" Width="400">
+        Title="Upsert User" Height="450" Width="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="33*"/>
@@ -28,6 +28,7 @@
 
         </ComboBox>
 
-        <Button Height="30" Command="{Binding AddUserCommand}" Content="Add" Width="70"  VerticalContentAlignment="Center" Padding="5" Margin="0,0,25,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" BorderThickness="1" BorderBrush="#E0E0E0" Grid.Row="1" />
+        <Button x:Name="LblUpsertAction" Height="30" Command="{Binding UpsertUserCommand}" Width="70"  VerticalContentAlignment="Center" Padding="5" Margin="0,0,25,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" BorderThickness="1" BorderBrush="#E0E0E0" Grid.Row="1" />
+        <Button x:Name="LblDeleteAction" Content="Delete" Height="30" Command="{Binding DeleteUserCommand}" Width="70"  VerticalContentAlignment="Center" Padding="5" Margin="0,0,112,25" VerticalAlignment="Bottom" HorizontalAlignment="Right" BorderThickness="1" BorderBrush="#E0E0E0" Grid.Row="1" Background="#FFF50D0D" />
     </Grid>
 </Window>

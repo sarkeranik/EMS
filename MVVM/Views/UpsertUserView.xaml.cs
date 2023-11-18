@@ -1,4 +1,5 @@
 ﻿
+using EMS.Models;
 using EMS.Services;
 using EMS.ViewModel;
 using System;
@@ -17,17 +18,17 @@ using System.Windows.Shapes;
 
 namespace EMS.Views
 {
-	
-	public partial class AddUserView : Window
-	{
+
+    public partial class UpsertUserView : Window
+    {
         private readonly IGoRestClientService _goRestClientService;
 
-        public AddUserView(IGoRestClientService goRestClientService)
+        public UpsertUserView(IGoRestClientService goRestClientService, UserDto userDto = null)
         {
             InitializeComponent();
             _goRestClientService = goRestClientService;
 
-            AddUserViewModel addUserViewModel = new AddUserViewModel(_goRestClientService);
+            UpsertUserViewModel addUserViewModel = new UpsertUserViewModel(_goRestClientService, this, userDto);
             this.DataContext = addUserViewModel;
         }
     }

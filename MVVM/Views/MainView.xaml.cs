@@ -20,9 +20,10 @@ using System.Windows.Shapes;
 
 namespace EMS.Views
 {
-	public partial class MainView : Window
-	{
+    public partial class MainView : Window
+    {
         private readonly IGoRestClientService _goRestClientService;
+        private MainViewModel _mainViewModel { get; set; }
 
         public MainView(IGoRestClientService goRestClientService)
         {
@@ -33,20 +34,36 @@ namespace EMS.Views
 
         private void Main_Loaded(object sender, RoutedEventArgs e)
         {
-            MainViewModel mainViewModel = new MainViewModel(_goRestClientService);
-            this.DataContext = mainViewModel;
+            _mainViewModel = new MainViewModel(_goRestClientService, this);
+            this.DataContext = _mainViewModel;
         }
 
         private void FilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			UserList.Items.Filter = FilterMethod;
-		}
+        {
+            UsersDataGrid.Items.Filter = FilterMethod;
+        }
+        private bool FilterMethod(object obj)
+        {
+            var user = (Models.UserDto)obj;
 
-		private bool FilterMethod(object obj)
-		{
-			var user = (Models.UserDto)obj;
+            return user.Name.Contains(FilterTextBox.Text, StringComparison.OrdinalIgnoreCase)
+                || user.Email.Contains(FilterTextBox.Text, StringComparison.OrdinalIgnoreCase)
+                || user.Gender.Contains(FilterTextBox.Text, StringComparison.OrdinalIgnoreCase)
+                || Convert.ToString(user.Id).Contains(FilterTextBox.Text, StringComparison.OrdinalIgnoreCase)
+                || user.Status.Contains(FilterTextBox.Text, StringComparison.OrdinalIgnoreCase);
+        }
 
-			return user.Name.Contains(FilterTextBox.Text, StringComparison.OrdinalIgnoreCase);
-		}
-	}
+        private void UsersDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var row = sender as DataGridRow;
+            var user = row.DataContext as Models.UserDto;
+
+            //MessageBox.Show($"{user.Name} row clicked");
+
+            if (user != null)
+            {
+                _mainViewModel.ShowEditUserWindowCommand.Execute(user);
+            }
+        }
+    }
 }

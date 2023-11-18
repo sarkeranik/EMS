@@ -1,4 +1,5 @@
 ﻿using EMS.Models;
+using EMS.MVVM.Models;
 using EMS.Services;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace EMS.Services
         /// Get User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<UserDto> GetUserAsync(string id);
+        Task<UserDto> GetUserAsync(int id);
 
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace EMS.Services
         /// Get User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<UserDto> GetUserAsync(string id, System.Threading.CancellationToken cancellationToken);
+        Task<UserDto> GetUserAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Update User
@@ -76,7 +77,7 @@ namespace EMS.Services
         /// Update User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<UserDto> UpdateUserAsync(string id, UserForCreationDto user);
+        Task<UserDto> UpdateUserAsync(int id, UserForCreationDto user);
 
 
         /// <summary>
@@ -86,7 +87,7 @@ namespace EMS.Services
         /// Update User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<UserDto> UpdateUserAsync(string id, UserForCreationDto user, System.Threading.CancellationToken cancellationToken);
+        Task<UserDto> UpdateUserAsync(int id, UserForCreationDto user, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Delete User
@@ -95,7 +96,7 @@ namespace EMS.Services
         /// Delete User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task DeleteUserAsync(string id);
+        Task DeleteUserAsync(int id);
 
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace EMS.Services
         /// Delete User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task DeleteUserAsync(string id, System.Threading.CancellationToken cancellationToken);
+        Task DeleteUserAsync(int id, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -318,7 +319,7 @@ namespace EMS.Services
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             string responseText_ = JoinFieldAndMessage(objectResponse_.Object);
-                            throw new ApiException(responseText_, status_, responseText_, headers_, null);
+                            throw new ApiException(responseText_, status_, null, headers_, null);
                         }
                         else
                         {
@@ -347,7 +348,7 @@ namespace EMS.Services
         /// Get User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<UserDto> GetUserAsync(string id)
+        public virtual Task<UserDto> GetUserAsync(int id)
         {
             return GetUserAsync(id, System.Threading.CancellationToken.None);
         }
@@ -360,7 +361,7 @@ namespace EMS.Services
         /// Get User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<UserDto> GetUserAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async Task<UserDto> GetUserAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -433,7 +434,7 @@ namespace EMS.Services
         /// Update User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<UserDto> UpdateUserAsync(string id, UserForCreationDto user)
+        public virtual Task<UserDto> UpdateUserAsync(int id, UserForCreationDto user)
         {
             return UpdateUserAsync(id, user, System.Threading.CancellationToken.None);
         }
@@ -446,7 +447,7 @@ namespace EMS.Services
         /// Update User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<UserDto> UpdateUserAsync(string id, UserForCreationDto user, System.Threading.CancellationToken cancellationToken)
+        public virtual async Task<UserDto> UpdateUserAsync(int id, UserForCreationDto user, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -533,7 +534,7 @@ namespace EMS.Services
         /// Delete User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task DeleteUserAsync(string id)
+        public virtual Task DeleteUserAsync(int id)
         {
             return DeleteUserAsync(id, System.Threading.CancellationToken.None);
         }
@@ -546,7 +547,7 @@ namespace EMS.Services
         /// Delete User
         /// </remarks>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task DeleteUserAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async Task DeleteUserAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -723,34 +724,6 @@ namespace EMS.Services
         }
     }
 
-    public partial class UserForCreationDto
-    {
-        [Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Email { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("gender", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Gender { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Name { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Status { get; set; }
-    }
-
-    
-
-    public partial class ErrorResonseDto
-    {
-        [Newtonsoft.Json.JsonProperty("field", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Field { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Message { get; set; }
-    }
-
-
-
     public partial class ApiException : System.Exception
     {
         public int StatusCode { get; private set; }
@@ -760,7 +733,7 @@ namespace EMS.Services
         public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
         public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
-            : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
+            : base(message, innerException)
         {
             StatusCode = statusCode;
             Response = response;
