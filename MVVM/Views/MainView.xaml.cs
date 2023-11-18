@@ -20,11 +20,11 @@ using System.Windows.Shapes;
 
 namespace EMS.Views
 {
-	public partial class Main : Window
+	public partial class MainView : Window
 	{
         private readonly IGoRestClientService _goRestClientService;
 
-        public Main(IGoRestClientService goRestClientService)
+        public MainView(IGoRestClientService goRestClientService)
         {
             InitializeComponent();
 

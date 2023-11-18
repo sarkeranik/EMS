@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using EMS.Core;
+using EMS.Core.Commands;
 using EMS.Models;
 using EMS.Services;
 using EMS.Views;
@@ -16,6 +16,7 @@ namespace EMS.ViewModel
 	public class MainViewModel
 	{
 		private readonly IGoRestClientService _goRestClientService;
+
         public List<UserDto> Users { get; set; }
 		public ICommand ShowWindowCommand { get; set; }
 
@@ -37,12 +38,15 @@ namespace EMS.ViewModel
 		{
 			var mainWindow = obj as Window;
 
-			AddUser addUserWin = new AddUser();
+			AddUserView addUserWin = new AddUserView(_goRestClientService);
 			addUserWin.Owner = mainWindow;
 			addUserWin.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			addUserWin.Show();
-
-
-		}
-	}
+            addUserWin.Closed += AddUserViewClosed;
+        }
+        private void AddUserViewClosed(object? sender, EventArgs e)
+        {
+            Users = _goRestClientService.GetAllUsersAsync(null, null, null).Result;
+        }
+    }
 }

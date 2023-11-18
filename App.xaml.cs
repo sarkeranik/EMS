@@ -26,7 +26,7 @@ namespace EMS
                 {
                     services.AddHttpClient();
                     services.AddTransient<IGoRestClientService, GoRestClientService>();
-                    services.AddSingleton<Main>();
+                    services.AddSingleton<MainView>();
                 })
                 .Build();
         }
@@ -35,7 +35,7 @@ namespace EMS
         {
             await AppHost!.StartAsync();
 
-            var startupForm = AppHost.Services.GetRequiredService<Main>();
+            var startupForm = AppHost.Services.GetRequiredService<MainView>();
             startupForm.Show();
 
             base.OnStartup(e);

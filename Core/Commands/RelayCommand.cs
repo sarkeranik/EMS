@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace EMS.Core
+namespace EMS.Core.Commands
 {
     public class RelayCommand : ICommand
     {
@@ -22,8 +22,6 @@ namespace EMS.Core
             _CanExcute = CanExcuteMethod;
 
         }
-
-
 
         public bool CanExecute(object? parameter)
         {
