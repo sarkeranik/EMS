@@ -25,6 +25,7 @@ namespace EMS
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHttpClient();
+                    services.AddTransient<IExportToExcelService, ExportToExcelService>();
                     services.AddTransient<IGoRestClientService, GoRestClientService>();
                     services.AddSingleton<MainView>();
                 })

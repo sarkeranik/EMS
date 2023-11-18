@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using EMS.Core.Commands;
 using EMS.Models;
@@ -17,6 +19,7 @@ namespace EMS.ViewModel
 {
     public class MainViewModel
     {
+        private readonly IExportToExcelService _exportToExcelService;
         private readonly IGoRestClientService _goRestClientService;
         private readonly MainView _window;
 
@@ -24,16 +27,18 @@ namespace EMS.ViewModel
 
         public ICommand ShowAddUserWindowCommand { get; set; }
         public ICommand ShowEditUserWindowCommand { get; set; }
+        public ICommand ExportToCsvCommand { get; set; }
 
-        public MainViewModel(IGoRestClientService goRestClientService, Window window)
+        public MainViewModel(IGoRestClientService goRestClientService, Window window, IExportToExcelService exportToExcelService)
         {
             _goRestClientService = goRestClientService;
             _window = (MainView)window;
+            _exportToExcelService = exportToExcelService;
+            _window.UsersDataGrid.ItemsSource = _goRestClientService.GetAllUsersAsync(null, null, null).Result;
 
             ShowAddUserWindowCommand = new RelayCommand(ShowAddUserWindow, CanShowWindowOfAddUser);
             ShowEditUserWindowCommand = new RelayCommand(ShowEditUserWindow, CanShowWindowOfEditUser);
-
-            _window.UsersDataGrid.ItemsSource = _goRestClientService.GetAllUsersAsync(null, null, null).Result; ;
+            ExportToCsvCommand = new RelayCommand(ExportToCsv, CanExportToCsv);
         }
 
         private bool CanShowWindowOfAddUser(object obj)
@@ -72,6 +77,18 @@ namespace EMS.ViewModel
                 addUserWin.LblDeleteAction.Visibility = Visibility.Visible;
                 addUserWin.Show();
                 addUserWin.Closed += AddUserViewClosed;
+            }
+        }
+        
+        private bool CanExportToCsv(object obj)
+        {
+            return true;
+        }
+        private void ExportToCsv(object obj)
+        {
+            if(_window.UsersDataGrid.Items.Count > 0)
+            {
+                _exportToExcelService.ExportToExcel(_window.UsersDataGrid);
             }
         }
 
