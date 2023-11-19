@@ -10,12 +10,24 @@
         Loaded="Main_Loaded">
 
     <Grid Background="#F5F5F5">
-        <Grid Background="White" Margin="25,40,25,10">
-            <TextBox Name="FilterTextBox" TextChanged="FilterTextBox_TextChanged" Height="30" Width="450" Margin="25,25,0,0" VerticalAlignment="Top"  HorizontalAlignment="Left" BorderThickness="1" BorderBrush="#E0E0E0" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="310*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
+        <Grid Background="White" Margin="25,40,25,8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="583*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox Name="FilterTextBox" Height="30" Width="450" Margin="25,25,0,0" VerticalAlignment="Top"  HorizontalAlignment="Left" BorderThickness="1" BorderBrush="#E0E0E0" >
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding SearchTextChangedCommand}" Key="Enter" />
+                </TextBox.InputBindings>
+            </TextBox>
             <Button Height="30" CommandParameter="{x:Reference Name= mainwindow}" Command="{Binding ShowAddUserWindowCommand}"  Content="Add User" Width="100" VerticalContentAlignment="Center" Padding="5" Margin="0,30,143,0" VerticalAlignment="Top" HorizontalAlignment="Right" BorderThickness="1" BorderBrush="#E0E0E0"  />
             <Button Height="30" CommandParameter="{x:Reference Name= mainwindow}" Command="{Binding ExportToCsvCommand}"  Content="Export" Width="100" VerticalContentAlignment="Center" Padding="5" Margin="0,30,25,0" VerticalAlignment="Top" HorizontalAlignment="Right" BorderThickness="1" BorderBrush="#E0E0E0"  />
 
-            <DataGrid Grid.Row="1" Name="UsersDataGrid" AutoGenerateColumns="False" BorderBrush="#cdcdcd" Margin="25,70,25,210" Padding="0" IsReadOnly="True" CanUserAddRows="False" >
+            <DataGrid Name="UsersDataGrid" AutoGenerateColumns="False" BorderBrush="#cdcdcd" Margin="25,70,25,119" Padding="0" IsReadOnly="True" CanUserAddRows="False" Height="Auto" >
                 <DataGrid.Resources>
                     <Style TargetType="DataGridRow">
                         <EventSetter Event="MouseDoubleClick" Handler="UsersDataGrid_MouseDoubleClick" ></EventSetter>
@@ -29,7 +41,7 @@
                     <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal" Height="50" Margin="0,396,25,138">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,396,25,0" Width="303">
 
                 <TextBlock Text="Records per page" VerticalAlignment="Center" Margin="5"/>
 

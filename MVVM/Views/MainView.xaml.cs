@@ -45,9 +45,10 @@ namespace EMS.Views
             this.DataContext = _mainViewModel;
         }
 
+        public bool ischanging = false;
         private void FilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UsersDataGrid.Items.Filter = FilterMethod;
+            _mainViewModel.SearchTextChangedCommand.Execute(FilterTextBox.Text);
         }
         private bool FilterMethod(object obj)
         {
@@ -74,7 +75,8 @@ namespace EMS.Views
         private void DDNumbersOfPages_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cmb = sender as ComboBox;
-            _mainViewModel.NumbersOfPagesSelectionChangedommand.Execute(cmb.SelectedValue);
+            _mainViewModel.NumbersOfPagesSelectionChangedCommand.Execute(cmb.SelectedValue);
         }
+
     }
 }

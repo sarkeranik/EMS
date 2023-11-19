@@ -29,7 +29,8 @@ namespace EMS.ViewModel
         public ICommand ShowAddUserWindowCommand { get; set; }
         public ICommand ShowEditUserWindowCommand { get; set; }
         public ICommand ExportToCsvCommand { get; set; }
-        public ICommand NumbersOfPagesSelectionChangedommand { get; set; }
+        public ICommand NumbersOfPagesSelectionChangedCommand { get; set; }
+        public ICommand SearchTextChangedCommand { get; set; }
 
         public MainViewModel(IGoRestClientService goRestClientService, Window window, IExportToExcelService exportToExcelService)
         {
@@ -41,7 +42,8 @@ namespace EMS.ViewModel
             ShowAddUserWindowCommand = new RelayCommand(ShowAddUserWindow, CanShowWindowOfAddUser);
             ShowEditUserWindowCommand = new RelayCommand(ShowEditUserWindow, CanShowWindowOfEditUser);
             ExportToCsvCommand = new RelayCommand(ExportToCsv, CanExportToCsv);
-            NumbersOfPagesSelectionChangedommand = new RelayCommand(NumbersOfPagesSelectionChanged, (s) => true);
+            NumbersOfPagesSelectionChangedCommand = new RelayCommand(NumbersOfPagesSelectionChanged, (s) => true);
+            SearchTextChangedCommand = new RelayCommand(SearchTextChanged, (s) => true);
 
             NextCommand = new RelayCommand(NextPage, (s) => true);
             PreviousCommand = new RelayCommand(PreviousPage, (s) => true);
@@ -97,17 +99,23 @@ namespace EMS.ViewModel
                 _exportToExcelService.ExportToExcel(_window.UsersDataGrid);
             }
         }
-
+        private void SearchTextChanged(object obj)
+        {
+            var recordsToShow = _goRestClientService.GetAllUsersAsync(_window.FilterTextBox.Text, CurrentPage.ToString(), _selectedRecord.ToString()).Result;
+            UpdateCollection(recordsToShow);
+            UpdateEnableState();
+        }
 
 
         private void AddUserViewClosed(object? sender, EventArgs e)
         {
-            UpdateCollection(_goRestClientService.GetAllUsersAsync(null, null, null).Result);
+            var recordsToShow = _goRestClientService.GetAllUsersAsync(null, CurrentPage.ToString(), _selectedRecord.ToString()).Result;
+
+            UpdateCollection(recordsToShow);
         }
 
         private void UpdateCollection(IEnumerable<UserDto> users)
         {
-            //_window.UsersDataGrid.ClearValue();
             _window.UsersDataGrid.ItemsSource = users;
         }
 
