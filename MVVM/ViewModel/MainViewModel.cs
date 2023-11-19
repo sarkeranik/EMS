@@ -23,11 +23,13 @@ namespace EMS.ViewModel
         private readonly IGoRestClientService _goRestClientService;
         private readonly MainView _window;
 
-        private List<UserDto> Users { get; set; }
+        private List<UserDto> Users { get; set; } = new List<UserDto>();
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand ShowAddUserWindowCommand { get; set; }
         public ICommand ShowEditUserWindowCommand { get; set; }
         public ICommand ExportToCsvCommand { get; set; }
+        public ICommand NumbersOfPagesSelectionChangedommand { get; set; }
 
         public MainViewModel(IGoRestClientService goRestClientService, Window window, IExportToExcelService exportToExcelService)
         {
@@ -39,6 +41,10 @@ namespace EMS.ViewModel
             ShowAddUserWindowCommand = new RelayCommand(ShowAddUserWindow, CanShowWindowOfAddUser);
             ShowEditUserWindowCommand = new RelayCommand(ShowEditUserWindow, CanShowWindowOfEditUser);
             ExportToCsvCommand = new RelayCommand(ExportToCsv, CanExportToCsv);
+            NumbersOfPagesSelectionChangedommand = new RelayCommand(NumbersOfPagesSelectionChanged, (s) => true);
+
+            NextCommand = new RelayCommand(NextPage, (s) => true);
+            PreviousCommand = new RelayCommand(PreviousPage, (s) => true);
         }
 
         private bool CanShowWindowOfAddUser(object obj)
@@ -79,22 +85,136 @@ namespace EMS.ViewModel
                 addUserWin.Closed += AddUserViewClosed;
             }
         }
-        
+
         private bool CanExportToCsv(object obj)
         {
             return true;
         }
         private void ExportToCsv(object obj)
         {
-            if(_window.UsersDataGrid.Items.Count > 0)
+            if (_window.UsersDataGrid.Items.Count > 0)
             {
                 _exportToExcelService.ExportToExcel(_window.UsersDataGrid);
             }
         }
 
+
+
         private void AddUserViewClosed(object? sender, EventArgs e)
         {
-            _window.UsersDataGrid.ItemsSource = _goRestClientService.GetAllUsersAsync(null, null, null).Result;
+            UpdateCollection(_goRestClientService.GetAllUsersAsync(null, null, null).Result);
         }
+
+        private void UpdateCollection(IEnumerable<UserDto> users)
+        {
+            //_window.UsersDataGrid.ClearValue();
+            _window.UsersDataGrid.ItemsSource = users;
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #region Pagination
+
+        public List<int> DDNumbersOfPages { get; set; } = new List<int>() { 5, 10, 20, 30 };
+
+        public ICommand PreviousCommand { get; set; }
+        public ICommand NextCommand { get; set; }
+
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get { return _currentPage; }
+            set
+            {
+                _currentPage = value;
+                OnPropertyChanged(nameof(CurrentPage));
+                UpdateEnableState();
+            }
+        }
+
+        private int _selectedRecord = 10;
+        public int SelectedRecord
+        {
+            get { return _selectedRecord; }
+            set
+            {
+                _selectedRecord = value;
+                OnPropertyChanged(nameof(CurrentPage));
+                UpdateRecordCount();
+            }
+        }
+
+        private int _numberOfPages = 20;
+        public int NumberOfPages
+        {
+            get { return _numberOfPages; }
+            set
+            {
+                _numberOfPages = value;
+                OnPropertyChanged(nameof(NumberOfPages));
+                UpdateEnableState();
+            }
+        }
+
+        private bool _isPreviousEnabled;
+        public bool IsPreviousEnabled
+        {
+            get { return _isPreviousEnabled; }
+            set
+            {
+                _isPreviousEnabled = value;
+                OnPropertyChanged(nameof(IsPreviousEnabled));
+            }
+        }
+
+        private bool _isNextEnabled;
+        public bool IsNextEnabled
+        {
+            get { return _isNextEnabled; }
+            set
+            {
+                _isNextEnabled = value;
+                OnPropertyChanged(nameof(IsNextEnabled));
+            }
+        }
+
+        private void NumbersOfPagesSelectionChanged(object obj)
+        {
+            var recordsToShow = _goRestClientService.GetAllUsersAsync(null, CurrentPage.ToString(), _selectedRecord.ToString()).Result;
+            UpdateCollection(recordsToShow);
+            UpdateEnableState();
+        }
+        private void PreviousPage(object obj)
+        {
+            CurrentPage--;
+
+            var recordsToShow = _goRestClientService.GetAllUsersAsync(null, CurrentPage.ToString(), _selectedRecord.ToString()).Result;
+            UpdateCollection(recordsToShow);
+            UpdateEnableState();
+        }
+        private void NextPage(object obj)
+        {
+            CurrentPage++;
+
+            var recordsToShow = _goRestClientService.GetAllUsersAsync(null, CurrentPage.ToString(), _selectedRecord.ToString()).Result;
+            UpdateCollection(recordsToShow);
+            UpdateEnableState();
+        }
+        private void UpdateEnableState()
+        {
+            _window.BtnPreviousPage.Visibility = CurrentPage > 1 ? Visibility.Visible : Visibility.Hidden;
+            _window.BtnNextPage.Visibility = CurrentPage < NumberOfPages ? Visibility.Visible : Visibility.Hidden;
+        }
+        private void UpdateRecordCount()
+        {
+            //NumberOfPages = (int)Math.Ceiling((double)Users.Count / SelectedRecord);
+            //NumberOfPages = NumberOfPages == 0 ? 1 : NumberOfPages;
+            //UpdateCollection(Users.Take(SelectedRecord));
+            CurrentPage = 1;
+        }
+        #endregion
     }
 }

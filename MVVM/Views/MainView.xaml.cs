@@ -70,5 +70,11 @@ namespace EMS.Views
                 _mainViewModel.ShowEditUserWindowCommand.Execute(user);
             }
         }
+
+        private void DDNumbersOfPages_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cmb = sender as ComboBox;
+            _mainViewModel.NumbersOfPagesSelectionChangedommand.Execute(cmb.SelectedValue);
+        }
     }
 }
