@@ -60,7 +60,7 @@ namespace EMS.ViewModel
             UpsertUserView addUserWin = new UpsertUserView(_goRestClientService);
             addUserWin.Owner = mainWindow;
             addUserWin.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            addUserWin.Title = "Add an User";
+            addUserWin.Title = "Add Employee";
             addUserWin.LblUpsertAction.Content = "Add";
             addUserWin.LblDeleteAction.Visibility = Visibility.Hidden;
             addUserWin.Show();
@@ -80,7 +80,7 @@ namespace EMS.ViewModel
                 UpsertUserView addUserWin = new UpsertUserView(_goRestClientService, userDto);
                 addUserWin.Owner = _window;
                 addUserWin.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                addUserWin.Title = "Update an User";
+                addUserWin.Title = "Update Employee";
                 addUserWin.LblUpsertAction.Content = "Update";
                 addUserWin.LblDeleteAction.Visibility = Visibility.Visible;
                 addUserWin.Show();
